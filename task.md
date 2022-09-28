@@ -1,29 +1,14 @@
 ---
-title: Practical Machine Learning Project Report
-author: "by Hongzheng Wang"
-output:
-  html_document:
-    fig_height: 9
-    fig_width: 9
+title: task
 ---
 
-## Introduction  
-Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible to collect a large amount of data about personal activity relatively inexpensively. These type of devices are part of the quantified self movement – a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it.  
-
-In this project, we will use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants to predict the manner in which they did the exercise.  
-
-## Data Preprocessing  
-
+# load data 
 ```r
 library(caret)
 library(rpart)
 library(rpart.plot)
 library(randomForest)
 library(corrplot)
-```
-### Download the Data
-
-```r
 trainUrl <-"https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"
 testUrl <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv"
 trainFile <- "./data/pml-training.csv"
@@ -38,7 +23,7 @@ if (!file.exists(testFile)) {
   download.file(testUrl, destfile=testFile, method="curl")
 }
 ```
-### Read the Data
+# read data
 After downloading the data from the data source, we can read the two csv files into two data frames.  
 
 ```r
@@ -60,7 +45,7 @@ dim(testRaw)
 ```
 The training data set contains 19622 observations and 160 variables, while the testing data set contains 20 observations and 160 variables. The "classe" variable in the training set is the outcome to predict.
 
-### Clean the data
+# preprocess
 In this step, we will clean the data and get rid of observations with missing values as well as some meaningless variables.
 
 ```r
@@ -90,7 +75,7 @@ testCleaned <- testRaw[, sapply(testRaw, is.numeric)]
 ```
 Now, the cleaned training data set contains 19622 observations and 53 variables, while the testing data set contains 20 observations and 53 variables. The "classe" variable is still in the cleaned training set.
 
-### Slice the data
+#subset data
 Then, we can split the cleaned training set into a pure training data set (70%) and a validation data set (30%). We will use the validation data set to conduct cross validation in future steps.  
 
 ```r
@@ -100,7 +85,7 @@ trainData <- trainCleaned[inTrain, ]
 testData <- trainCleaned[-inTrain, ]
 ```
 
-## Data Modeling
+## Data Model
 We fit a predictive model for activity recognition using **Random Forest** algorithm because it automatically selects important variables and is robust to correlated covariates & outliers in general. We will use **5-fold cross validation** when applying the algorithm.  
 
 ```r
@@ -192,7 +177,7 @@ oose
 ```
 So, the estimated accuracy of the model is 99.30% and the estimated out-of-sample error is 0.70%.
 
-## Predicting for Test Data Set
+## Predicting
 Now, we apply the model to the original testing data set downloaded from the data source. We remove the `problem_id` column first.  
 
 ```r
